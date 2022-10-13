@@ -12,6 +12,13 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
   ];
 
+  // Set states
+  const [anecdoteVotes, setAnecdoteVotes] = useState(new Array(anecdotes.length).fill(0));
+  const [selected, setSelected] = useState(0);
+
+  // Find the index of the most voted anedote
+  let anecdoteIndexWithTheMostVotes = anecdoteVotes.reduce((mostVotedIndexSoFar, currentlyTestedValue, currentlyTestedIndex, array) => currentlyTestedValue > array[mostVotedIndexSoFar] ? currentlyTestedIndex : mostVotedIndexSoFar, 0);
+
   // Event handlers
   const handleClick = () => {
     const randomlySelectedAnecdote = Math.floor(Math.random() * anecdotes.length);
@@ -24,16 +31,16 @@ const App = () => {
     setAnecdoteVotes(anecdoteVotesDuplicate);
   }
 
-  // Set states
-  const [anecdoteVotes, setAnecdoteVotes] = useState(new Array(anecdotes.length).fill(0));
-  const [selected, setSelected] = useState(0);
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>Votes: {anecdoteVotes[selected]}</p>
       <button onClick={handleVotes}>Vote</button>
       <button onClick={handleClick}>Next anecdote</button>
+      <h1>Anecdote with the most votes</h1>
+      <p>{anecdotes[anecdoteIndexWithTheMostVotes]} ({anecdoteVotes[anecdoteIndexWithTheMostVotes]} vote{anecdoteVotes[anecdoteIndexWithTheMostVotes] !== 1 ? 's' : ''})</p>
     </div>
   )
 }
