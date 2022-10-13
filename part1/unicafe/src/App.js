@@ -3,21 +3,25 @@ import { useState } from 'react';
 
 // Create components
 const Statistics = (props) => {
-  if (props.all != 0) {
+  if (props.all !== 0) {
     return (
       <ul>
-        <li>Good: {props.good}</li>
-        <li>Neutral: {props.neutral}</li>
-        <li>Bad: {props.bad}</li>
-        <li>All: {props.all}</li>
-        <li>Average: {props.average}</li>
-        <li>Positive: {props.positive}%</li>
+        <StatisticsLine text='Good' value={props.good} />
+        <StatisticsLine text='Neutral' value={props.neutral} />
+        <StatisticsLine text='Bad' value={props.bad} />
+        <StatisticsLine text='All' value={props.all} />
+        <StatisticsLine text='Average' value={props.average} />
+        <StatisticsLine text='Positive' value={props.positive} />
       </ul>
-    )
+    );
   } else {
     return <p>No feedback given.</p>
   }
 
+}
+
+const StatisticsLine = (props) => {
+  return <li>{props.text}: {props.value}</li>;
 }
 
 const App = () => {
@@ -29,8 +33,8 @@ const App = () => {
   let all = good + neutral + bad;
 
   // divider can't be zero
-  let average = all != 0 ? (good - bad) / all : 0;
-  let positive = all != 0 ? good / all : 0;
+  let average = all !== 0 ? (good - bad) / all : 0;
+  let positive = all !== 0 ? good / all : 0;
 
   const handleGoodClick = () => {
     setGood(good + 1);
@@ -51,7 +55,7 @@ const App = () => {
       <h1>Statistics</h1>
       <Statistics good={good} neutral={neutral} bad={bad} all={all} average={average} positive={positive} />
     </div>
-  )
+  );
 }
 
 export default App;
