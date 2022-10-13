@@ -5,14 +5,16 @@ import { useState } from 'react';
 const Statistics = (props) => {
   if (props.all !== 0) {
     return (
-      <ul>
-        <StatisticsLine text='Good' value={props.good} />
-        <StatisticsLine text='Neutral' value={props.neutral} />
-        <StatisticsLine text='Bad' value={props.bad} />
-        <StatisticsLine text='All' value={props.all} />
-        <StatisticsLine text='Average' value={props.average} />
-        <StatisticsLine text='Positive' value={props.positive} />
-      </ul>
+      <table>
+        <tbody>
+          <StatisticsLine text='Good' value={props.good} />
+          <StatisticsLine text='Neutral' value={props.neutral} />
+          <StatisticsLine text='Bad' value={props.bad} />
+          <StatisticsLine text='All' value={props.all} />
+          <StatisticsLine text='Average' value={props.average} />
+          <StatisticsLine text='Positive' value={props.positive} />
+        </tbody>
+      </table>
     );
   } else {
     return <p>No feedback given.</p>
@@ -21,7 +23,12 @@ const Statistics = (props) => {
 }
 
 const StatisticsLine = (props) => {
-  return <li>{props.text}: {props.value}</li>;
+  return (
+    <tr>
+      <td>{props.text}</td>
+      <td>{props.value}</td>
+    </tr>
+  );
 }
 
 const Button = (props) => {
