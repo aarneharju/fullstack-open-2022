@@ -5,7 +5,6 @@ const Header = (props) => {
 }
 
 const Content = (props) => {
-  console.log({ props });
   const partsArray = props.parts.map(part => <Part key={part.id} part={part} />)
   return (
     <div>
@@ -23,7 +22,8 @@ const Part = (props) => {
 }
 
 const Total = (props) => {
-  return <p>Number of exercises {props.parts[0]['exercises'] + props.parts[1]['exercises'] + props.parts[2]['exercises']}</p>
+  const sumOfExercises = props.parts.reduce((sumOfValues, currentPart) => sumOfValues + currentPart.exercises, 0);
+  return <p>Number of exercises {sumOfExercises} </p>
 }
 
 const Course = (props) => {
