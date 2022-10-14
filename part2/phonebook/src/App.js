@@ -11,7 +11,6 @@ const App = () => {
     { name: 'Arto Hellas' }
   ])
   const [newName, setNewName] = useState('');
-  const [newNameInputText, setNewNameInputText] = useState('');
 
   const numbersArray = persons.map(person => <Person key={person.name} person={person} />);
 
@@ -22,8 +21,12 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setPersons(persons.concat({ name: newName }));
-    setNewName('');
+    if (persons.every(person => person.name !== newName)) {
+      setPersons(persons.concat({ name: newName }));
+      setNewName('');
+    } else {
+      alert(`${newName} is already in the phone book`);
+    }
   };
 
   // Render
