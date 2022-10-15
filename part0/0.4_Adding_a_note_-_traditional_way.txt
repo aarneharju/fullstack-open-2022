@@ -1,0 +1,30 @@
+title Adding a note - traditional way
+
+note over Browser:
+user enters text in the text area
+and clicks submit
+end note
+
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+
+note over Server:
+New note gets added to the JSON
+file and server responds with
+HTTP status code 302 -> URL
+redirect to the notes -page
+end note
+
+Server-->Browser: HTTP status code 302 (URL redirect)
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+Server-->Browser: HTML code
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Server-->Browser: main.js
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: notes as JSON file
+
+note over Browser:
+Render notes to the page from JSON file
+end note
+

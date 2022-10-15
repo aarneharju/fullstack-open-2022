@@ -1,0 +1,25 @@
+title Adding a note - the SPA way
+
+note over Browser:
+user enters text in the text area
+and clicks submit
+end note
+
+note over Browser:
+The event handler in spa.js -file
+prevents the default handling of
+form submit and adds the new note
+straight to the notes list instead.
+After which it also sends the new
+note to the server in JSON format.
+end note
+
+note over Browser:
+Re-render notes to the page straight
+from the spa.js -file
+end note
+
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+
+
