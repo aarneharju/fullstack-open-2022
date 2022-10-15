@@ -1,6 +1,41 @@
 import './App.css';
 import { useState } from 'react';
 
+// Components
+const Search = (props) => {
+  return (
+    <form>
+      <label htmlFor='search'>Search name:</label>
+      <input type='text' value={props.newSearch} id='search' onChange={props.onChange} />
+    </form>
+  );
+};
+
+const AddPersonForm = (props) => {
+  const { newName, handleNewName, newNumber, handleNewNumber, handleSubmit } = props;
+  return (
+    <form>
+      <div>
+        Name: <input type='text' value={newName} onChange={handleNewName} />
+      </div>
+      <div>
+        Number: <input type='text' value={newNumber} onChange={handleNewNumber} />
+      </div>
+      <div>
+        <button type="submit" onClick={handleSubmit}>add</button>
+      </div>
+    </form>
+  );
+};
+
+const Numbers = (props) => {
+  return (
+    <ul>
+      {props.personsArray}
+    </ul>
+  );
+};
+
 const Person = (props) => {
   return <li>{props.person.name} {props.person.number}</li>;
 };
@@ -48,28 +83,15 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <form>
-        <label for='search'>Search name:</label>
-        <input type='text' value={newSearch} id='search' onChange={handleSearch} />
-      </form>
-      <form>
-        <div>
-          Name: <input type='text' value={newName} onChange={handleNewName} />
-        </div>
-        <div>
-          Number: <input type='text' value={newNumber} onChange={handleNewNumber} />
-        </div>
-        <div>
-          <button type="submit" onClick={handleSubmit}>add</button>
-        </div>
-      </form>
+      <Search newSearch={newSearch} onChange={handleSearch} />
+      <h2>Add new number</h2>
+      <AddPersonForm newName={newName} handleNewName={handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber} handleSubmit={handleSubmit} />
+
       <h2>Numbers</h2>
-      <ul>
-        {personsArray}
-      </ul>
-      <div>debug: {persons[0].name}</div>
+      <Numbers personsArray={personsArray} />
+      {/* <div>debug: {persons[0].name}</div>
       <div>debug: {newName}</div>
-      <div>debug: {newSearch}</div>
+      <div>debug: {newSearch}</div> */}
     </div>
   )
 }
