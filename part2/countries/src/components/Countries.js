@@ -1,10 +1,13 @@
+import ButtonShow from "./ButtonShow";
+
 const Countries = (props) => {
 
+    // Conditional rendering
     if (props.shownCountriesArray.length === 1) {
 
         const languagesArray = Object.values(props.shownCountriesArray[0].languages).map(language => <li key={language}>{language}</li>);
         const flagImageUrl = props.shownCountriesArray[0].flags.png;
-        console.log(props.shownCountriesArray[0]);
+
 
         return (
             <div>
@@ -20,9 +23,11 @@ const Countries = (props) => {
         )
     }
 
-    if (props.shownCountriesArray.length <= 10) {
+    if (props.shownCountriesArray.length > 1 && props.shownCountriesArray.length <= 10) {
 
-        const selectedCountriesNamesAsListItems = props.shownCountriesArray.map(country => <li key={country.name.common}>{country.name.common}</li>)
+        const selectedCountriesNamesAsListItems = props.shownCountriesArray.map(country => <li key={country.name.common}>{country.name.common} <ButtonShow country={country} shownCountriesArray={props.shownCountriesArray} handleClick={props.handleClick} text='Show' /></li>)
+
+        // const selectedCountriesNamesAsListItems = props.shownCountriesArray.map(country => <li key={country.name.common}>{country.name.common} <button onClick={() => handleClick(country)}>ShowIt</button></li>)
 
         return (
             <ul>
@@ -32,9 +37,7 @@ const Countries = (props) => {
 
     } else {
         return (
-            <>
-                <p>Too many matches, refine your filter.</p>
-            </>
+            <p>Too many matches, refine your filter.</p>
         )
     }
 }
