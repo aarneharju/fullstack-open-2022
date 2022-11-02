@@ -2,7 +2,7 @@
 
 import './App.css';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import apicalls from './apicalls';
 
 // Components
 const Search = (props) => {
@@ -51,22 +51,13 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
-  const databaseUrl = 'http://localhost:3001/persons';
-  const serverConnectionErrorMessage = 'Connection to server failed: ';
   const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} />);
 
   // Effect hooks
 
   // Get data from json-server
   useEffect(() => {
-    const promise = axios.get(databaseUrl);
-
-    promise
-      .then(response => {
-        setPersons(response.data);
-      })
-      .catch(error => alert(serverConnectionErrorMessage + error));
-
+    apicalls.getAllNotes();
   }, [])
 
   // Handler functions
@@ -87,15 +78,13 @@ const App = () => {
     if (persons.every(person => person.name !== newName)) {
 
       const newNumberObject = { name: newName, number: newNumber };
-      axios.post(databaseUrl, newNumberObject)
-        .then(response => {
-          console.log(response.data);
-          setPersons(persons.concat({ id: persons.length + 1, name: newName, number: newNumber }));
-          setNewName('');
-          setNewNumber('');
-          return
-        })
-        .catch(error => alert(`Unable to add new number, ${serverConnectionErrorMessage}: ${error}`));
+
+      apicalls.addNote(newNumberObject);
+      setPersons(persons.concat({ id: persons.length + 1, name: newName, number: newNumber }));
+      setNewName('');
+      setNewNumber('');
+      return
+
 
     } else {
       alert(`${newName} is already in the phone book`);
