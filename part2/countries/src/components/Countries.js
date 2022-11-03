@@ -3,8 +3,6 @@ import ButtonShow from "./ButtonShow";
 
 const Countries = (props) => {
 
-    console.log('weather', props.selectedCountryWeather);
-
     // Conditional rendering
     if (props.shownCountriesArray.length === 1) {
 

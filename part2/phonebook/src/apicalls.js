@@ -8,14 +8,16 @@ const getAllPersons = () =>
         .then(response => response.data)
         .catch(error => alert(`Unable to fetch notes, ${serverConnectionErrorMessage}: ${error}`));
 
-const addPerson = note =>
-    axios.post(databaseUrl, note)
+const addPerson = person =>
+    axios.post(databaseUrl, person)
         .then(response => response.data)
-        .catch(error => alert(`Unable to add note, ${serverConnectionErrorMessage}: ${error}`));
+        .catch(error => alert(`Unable to add person, ${serverConnectionErrorMessage}: ${error}`));
 
-const deletePerson = personID =>
-    axios.delete(databaseUrl, personID)
+const deletePerson = personID => {
+    console.log(personID);
+    console.log(`${databaseUrl}/${personID}`);
+    return axios.delete(`${databaseUrl}/${personID}`)
         .then(response => response.data)
         .catch(error => alert(`Unable to delete person, ${serverConnectionErrorMessage}: ${error}`));
-
+}
 export default { getAllPersons, addPerson, deletePerson };

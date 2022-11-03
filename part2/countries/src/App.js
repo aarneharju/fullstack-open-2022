@@ -11,8 +11,6 @@ function App() {
   const [countriesArray, setCountriesArray] = useState([]);
   const [selectedCountryWeather, setSelectedCountryWeather] = useState({});
 
-  console.log({ selectedCountryWeather });
-
   // Set variables
   const endpoint = 'https://restcountries.com/v3.1/all';
   const openweather_API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
@@ -51,13 +49,11 @@ function App() {
   const handleSearch = (event) => {
     const inputBoxContents = event.target.value;
     setControlledSearch(inputBoxContents);
-    setShownCountriesArray(countriesArray.filter(country => country.name.common.toLowerCase().includes(inputBoxContents.toLowerCase())));//.map(country => <li key={country.name.common}>{country.name.common}</li>));
+    setShownCountriesArray(countriesArray.filter(country => country.name.common.toLowerCase().includes(inputBoxContents.toLowerCase())));
   }
 
   const handleClick = (country) => {
-    console.log(country.name.common);
     setShownCountriesArray([country]);
-    console.log({ shownCountriesArray });
   }
 
   // Render

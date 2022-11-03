@@ -41,7 +41,7 @@ const Numbers = (props) => {
 };
 
 const Person = (props) => {
-  return <li>{props.person.name} {props.person.number} <Button onClick={''} personToDelete='props.id' text='Delete' /></li>;
+  return <li>{props.person.name} {props.person.number} <Button onClick={props.deletePerson} personToDelete={props.person.id} text='Delete' /></li>;
 };
 
 const Button = (props) => {
@@ -58,7 +58,15 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
-  const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} deletePerson={''} />);
+  // Functions
+  const deletePerson = (id) => {
+    apiCalls.deletePerson(id)
+      .then(deletedPerson => setPersons(persons.filter(person => person.id !== deletedPerson.id)))
+      .catch(error => alert('Gaga: ', error));
+    return 'Person deleted.';
+  }
+
+  const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} deletePerson={deletePerson} />);
 
   // Effect hooks
 
@@ -66,7 +74,7 @@ const App = () => {
   useEffect(() => {
     apiCalls.getAllPersons()
       .then(data => setPersons(data));
-  }, [])
+  }, [persons])
 
   // Handler functions
   const handleSearch = (event) => {
@@ -92,7 +100,7 @@ const App = () => {
           setPersons(persons.concat({ id: data.id, name: data.name, number: data.number }));
           setNewName('');
           setNewNumber('');
-          return
+          return 'Person added.';
         });
 
     } else {
@@ -100,11 +108,7 @@ const App = () => {
     }
   };
 
-  // Functions
-  const deletePerson = (id) => {
-    apiCalls.deletePerson(id)
-      .then(deletedPerson => setPersons(persons.filter(person => person.id !== deletedPerson.id)));
-  }
+
 
   // Render
   return (
