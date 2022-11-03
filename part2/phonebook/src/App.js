@@ -2,7 +2,8 @@
 
 import './App.css';
 import { useState, useEffect } from 'react';
-import apicalls from './apicalls';
+import apiCalls from './apiCalls';
+import axios from 'axios';
 
 // Components
 const Search = (props) => {
@@ -40,8 +41,14 @@ const Numbers = (props) => {
 };
 
 const Person = (props) => {
-  return <li>{props.person.name} {props.person.number}</li>;
+  return <li>{props.person.name} {props.person.number} <Button onClick={''} personToDelete='props.id' text='Delete' /></li>;
 };
+
+const Button = (props) => {
+  return (
+    <button onClick={() => props.onClick(props.personToDelete)} >{props.text}</button>
+  )
+}
 
 const App = () => {
   // Setup states
@@ -51,13 +58,14 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
-  const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} />);
+  const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} deletePerson={''} />);
 
   // Effect hooks
 
   // Get data from json-server
   useEffect(() => {
-    apicalls.getAllNotes();
+    apiCalls.getAllPersons()
+      .then(data => setPersons(data));
   }, [])
 
   // Handler functions
@@ -79,17 +87,24 @@ const App = () => {
 
       const newNumberObject = { name: newName, number: newNumber };
 
-      apicalls.addNote(newNumberObject);
-      setPersons(persons.concat({ id: persons.length + 1, name: newName, number: newNumber }));
-      setNewName('');
-      setNewNumber('');
-      return
-
+      apiCalls.addPerson(newNumberObject)
+        .then(data => {
+          setPersons(persons.concat({ id: data.id, name: data.name, number: data.number }));
+          setNewName('');
+          setNewNumber('');
+          return
+        });
 
     } else {
       alert(`${newName} is already in the phone book`);
     }
   };
+
+  // Functions
+  const deletePerson = (id) => {
+    apiCalls.deletePerson(id)
+      .then(deletedPerson => setPersons(persons.filter(person => person.id !== deletedPerson.id)));
+  }
 
   // Render
   return (
