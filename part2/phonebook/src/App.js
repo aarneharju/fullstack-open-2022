@@ -74,7 +74,7 @@ const App = () => {
   useEffect(() => {
     apiCalls.getAllPersons()
       .then(data => setPersons(data));
-  }, [persons])
+  }, [persons.length])
 
   // Handler functions
   const handleSearch = (event) => {
