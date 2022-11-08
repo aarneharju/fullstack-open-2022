@@ -4,6 +4,7 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import apiCalls from './apiCalls';
 import axios from 'axios';
+import Notification from './Notification';
 
 // Components
 const Search = (props) => {
@@ -53,6 +54,7 @@ const Button = (props) => {
 const App = () => {
   // Setup states
   const [persons, setPersons] = useState([]);
+  const [notificationMessageObject, setNotificationMessageObject] = useState(null);
 
   const [newSearch, setNewSearch] = useState('');
   const [newName, setNewName] = useState('');
@@ -68,7 +70,7 @@ const App = () => {
     } else return;
   }
 
-  const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} deletePerson={deletePerson} />);
+  const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} deletePerson={deletePerson} />); // deletePerson -function needs to be defined before this
 
   // Effect hooks
 
@@ -78,7 +80,7 @@ const App = () => {
       .then(data => setPersons(data));
   }, [])
 
-  // Handler functions
+  // Event handler functions
   const handleSearch = (event) => {
     setNewSearch(event.target.value);
   };
@@ -99,9 +101,17 @@ const App = () => {
 
       apiCalls.addPerson(newNumberObject)
         .then(data => {
+          const message = `${data.name} added to phonebook.`;
+          const type = 'success';
+
           setPersons(persons.concat({ id: data.id, name: data.name, number: data.number }));
           setNewName('');
           setNewNumber('');
+
+          setNotificationMessageObject({ message, type });
+          setTimeout(() => {
+            setNotificationMessageObject(null);
+          }, 5000);
           return 'Person added.';
         });
 
@@ -109,7 +119,19 @@ const App = () => {
       if (window.confirm(`${newName} is already in the phonebook, would you like to replace the old number with the new one?`)) {
         const personToUpdate = persons.find(person => person.name === newName)
         apiCalls.updatePerson(personToUpdate.id, { name: newName, number: newNumber, id: personToUpdate.id })
-          .then(data => setPersons(persons.map(person => person.id !== personToUpdate.id ? person : data)));
+          .then(data => {
+            const message = `${data.name}'s number was updated.`;
+            const type = 'success';
+
+            setPersons(persons.map(person => person.id !== personToUpdate.id ? person : data));
+            // setNewName('');
+            // setNewNumber('');
+
+            setNotificationMessageObject({ message, type });
+            setTimeout(() => {
+              setNotificationMessageObject(null);
+            }, 5000);
+          });
       } else return;
     }
   };
@@ -120,6 +142,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification messageObject={notificationMessageObject} />
       <Search newSearch={newSearch} onChange={handleSearch} />
       <h2>Add new number</h2>
       <AddPersonForm newName={newName} handleNewName={handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber} handleSubmit={handleSubmit} />

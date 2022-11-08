@@ -10,7 +10,10 @@ const getAllPersons = () =>
 
 const addPerson = person =>
     axios.post(databaseUrl, person)
-        .then(response => response.data)
+        .then(response => {
+
+            return response.data
+        })
         .catch(error => alert(`Unable to add person, ${serverConnectionErrorMessage}: ${error}`));
 
 const updatePerson = (personID, newObject) => {
