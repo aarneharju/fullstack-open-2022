@@ -60,10 +60,12 @@ const App = () => {
 
   // Functions
   const deletePerson = (id) => {
-    apiCalls.deletePerson(id)
-      .then(deletedPerson => setPersons(persons.filter(person => person.id !== deletedPerson.id)))
-      .catch(error => alert('Gaga: ', error));
-    return 'Person deleted.';
+    if (window.confirm(`Delete ${persons.find(person => person.id === id).name}?`)) {
+      apiCalls.deletePerson(id)
+        .then(setPersons(persons.filter(person => person.id !== id)))
+        .catch(error => alert('Unable to delete person: ', error));
+      return 'Person deleted.'
+    } else return;
   }
 
   const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} deletePerson={deletePerson} />);
@@ -74,7 +76,7 @@ const App = () => {
   useEffect(() => {
     apiCalls.getAllPersons()
       .then(data => setPersons(data));
-  }, [persons.length])
+  }, [])
 
   // Handler functions
   const handleSearch = (event) => {
@@ -104,7 +106,11 @@ const App = () => {
         });
 
     } else {
-      alert(`${newName} is already in the phone book`);
+      if (window.confirm(`${newName} is already in the phonebook, would you like to replace the old number with the new one?`)) {
+        const personToUpdate = persons.find(person => person.name === newName)
+        apiCalls.updatePerson(personToUpdate.id, { name: newName, number: newNumber, id: personToUpdate.id })
+          .then(data => setPersons(persons.map(person => person.id !== personToUpdate.id ? person : data)));
+      } else return;
     }
   };
 

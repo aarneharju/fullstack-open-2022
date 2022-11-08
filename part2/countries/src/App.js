@@ -34,7 +34,6 @@ function App() {
       fetch(openweatherFullFetchUrl)
         .then(result => result.json())
         .then(data => {
-          console.log({ data });
           setSelectedCountryWeather(selectedCountryWeather => {
             return {
               ...selectedCountryWeather,

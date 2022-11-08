@@ -13,11 +13,14 @@ const addPerson = person =>
         .then(response => response.data)
         .catch(error => alert(`Unable to add person, ${serverConnectionErrorMessage}: ${error}`));
 
-const deletePerson = personID => {
-    console.log(personID);
-    console.log(`${databaseUrl}/${personID}`);
-    return axios.delete(`${databaseUrl}/${personID}`)
+const updatePerson = (personID, newObject) => {
+    return axios.put(`${databaseUrl}/${personID}`, newObject)
         .then(response => response.data)
+        .catch(error => alert(`Unable to update person, ${serverConnectionErrorMessage}: ${error}`));
+}
+
+const deletePerson = personID => {
+    return axios.delete(`${databaseUrl}/${personID}`)
         .catch(error => alert(`Unable to delete person, ${serverConnectionErrorMessage}: ${error}`));
 }
-export default { getAllPersons, addPerson, deletePerson };
+export default { getAllPersons, addPerson, updatePerson, deletePerson };
