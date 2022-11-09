@@ -21,4 +21,5 @@ const updatePerson = (personID, newObject) => {
 const deletePerson = personID => {
     return axios.delete(`${databaseUrl}/${personID}`)
 }
+
 export default { getAllPersons, addPerson, updatePerson, deletePerson };

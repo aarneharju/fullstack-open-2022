@@ -3,7 +3,6 @@
 import './App.css';
 import { useState, useEffect } from 'react';
 import apiCalls from './apiCalls';
-import axios from 'axios';
 import Notification from './Notification';
 
 // Components
@@ -60,6 +59,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
+  // Regular variables
   const serverConnectionErrorMessage = 'connection to server failed: ';
 
   // Functions
@@ -69,14 +69,25 @@ const App = () => {
         .then(data => {
           const message = `${persons.find(person => person.id === id).name} deleted from phonebook.`;
           const type = 'success';
-
           setPersons(persons.filter(person => person.id !== id));
-
+          handleNotifications({ message, type });
+          resetFormFields();
         })
         .catch(error => {
-          const message = `Unable to delete person: ${error}`;
-          const type = 'error';
-          handleNotifications({ message, type });
+          if (error.response.status === 404) {
+            const message = `Information of ${persons.find(person => person.id === id).name} has already been removed from server: ${error}`;
+            const type = 'error';
+            setPersons(persons.filter(person => person.id !== id))
+            handleNotifications({ message, type });
+            resetFormFields();
+          }
+          else {
+            const message = `Unable to delete ${persons.find(person => person.id === id).name}: ${error}`;
+            const type = 'error';
+            setPersons(persons.filter(person => person.id !== id))
+            handleNotifications({ message, type });
+            resetFormFields();
+          }
         });
       return 'Person deleted.'
     } else return;
@@ -89,7 +100,13 @@ const App = () => {
     }, 5000);
   }
 
+  const resetFormFields = () => {
+    setNewSearch('');
+    setNewName('');
+    setNewNumber('');
+  }
 
+  // This variable needs to be defined after deletePerson has been defined
   const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} deletePerson={deletePerson} />); // deletePerson -function needs to be defined before this
 
   // Effect hooks
@@ -99,7 +116,7 @@ const App = () => {
     apiCalls.getAllPersons()
       .then(data => setPersons(data))
       .catch(error => {
-        const message = `Unable to fetch notes, ${serverConnectionErrorMessage}: ${error}`;
+        const message = `Unable to fetch notes: ${error}`;
         const type = 'error';
         handleNotifications({ message, type });
       });
@@ -130,8 +147,7 @@ const App = () => {
           const type = 'success';
 
           setPersons(persons.concat({ id: data.id, name: data.name, number: data.number }));
-          setNewName('');
-          setNewNumber('');
+          resetFormFields();
 
           handleNotifications({ message, type });
           return 'Person added.';
@@ -140,6 +156,7 @@ const App = () => {
           const message = `Unable to add person, ${serverConnectionErrorMessage}: ${error}`;
           const type = 'error';
           handleNotifications({ message, type });
+          resetFormFields();
         });
 
     } else {
@@ -151,8 +168,7 @@ const App = () => {
             const type = 'success';
 
             setPersons(persons.map(person => person.id !== personToUpdate.id ? person : data));
-            setNewName('');
-            setNewNumber('');
+            resetFormFields();
 
             handleNotifications({ message, type });
           })
@@ -160,6 +176,7 @@ const App = () => {
             const message = `Unable to update person: ${error}`;
             const type = 'error';
             handleNotifications({ message, type });
+            resetFormFields();
           });
       } else return;
     }
@@ -178,9 +195,6 @@ const App = () => {
 
       <h2>Numbers</h2>
       <Numbers personsArray={personsArray} />
-      {/* <div>debug: {persons[0].name}</div>
-      <div>debug: {newName}</div>
-      <div>debug: {newSearch}</div> */}
     </div>
   )
 }
