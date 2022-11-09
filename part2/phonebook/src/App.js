@@ -60,17 +60,35 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
-  const serverConnectionErrorMessage = 'Connection to server failed: ';
+  const serverConnectionErrorMessage = 'connection to server failed: ';
 
   // Functions
   const deletePerson = (id) => {
     if (window.confirm(`Delete ${persons.find(person => person.id === id).name}?`)) {
       apiCalls.deletePerson(id)
-        .then(setPersons(persons.filter(person => person.id !== id)))
-        .catch(error => alert(`Unable to delete person, ${serverConnectionErrorMessage}: ${error}`));
+        .then(data => {
+          const message = `${persons.find(person => person.id === id).name} added to phonebook.`;
+          const type = 'success';
+
+          setPersons(persons.filter(person => person.id !== id));
+
+        })
+        .catch(error => {
+          const message = `Unable to delete person, ${serverConnectionErrorMessage}: ${error}`;
+          const type = 'error';
+          handleNotifications({ message, type });
+        });
       return 'Person deleted.'
     } else return;
   }
+
+  const handleNotifications = ({ message, type }) => {
+    setNotificationMessageObject({ message, type });
+    setTimeout(() => {
+      setNotificationMessageObject(null);
+    }, 5000);
+  }
+
 
   const personsArray = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())).map(person => <Person key={person.id} person={person} deletePerson={deletePerson} />); // deletePerson -function needs to be defined before this
 
@@ -80,7 +98,11 @@ const App = () => {
   useEffect(() => {
     apiCalls.getAllPersons()
       .then(data => setPersons(data))
-      .catch(error => alert(`Unable to fetch notes, ${serverConnectionErrorMessage}: ${error}`));
+      .catch(error => {
+        const message = `Unable to fetch notes, ${serverConnectionErrorMessage}: ${error}`;
+        const type = 'error';
+        handleNotifications({ message, type });
+      });
   }, [])
 
   // Event handler functions
@@ -111,13 +133,14 @@ const App = () => {
           setNewName('');
           setNewNumber('');
 
-          setNotificationMessageObject({ message, type });
-          setTimeout(() => {
-            setNotificationMessageObject(null);
-          }, 5000);
+          handleNotifications({ message, type });
           return 'Person added.';
         })
-        .catch(error => alert(`Unable to add person, ${serverConnectionErrorMessage}: ${error}`));
+        .catch(error => {
+          const message = `Unable to add person, ${serverConnectionErrorMessage}: ${error}`;
+          const type = 'error';
+          handleNotifications({ message, type });
+        });
 
     } else {
       if (window.confirm(`${newName} is already in the phonebook, would you like to replace the old number with the new one?`)) {
@@ -128,15 +151,16 @@ const App = () => {
             const type = 'success';
 
             setPersons(persons.map(person => person.id !== personToUpdate.id ? person : data));
-            // setNewName('');
-            // setNewNumber('');
+            setNewName('');
+            setNewNumber('');
 
-            setNotificationMessageObject({ message, type });
-            setTimeout(() => {
-              setNotificationMessageObject(null);
-            }, 5000);
+            handleNotifications({ message, type });
           })
-          .catch(error => alert(`Unable to update person, ${serverConnectionErrorMessage}: ${error}`));
+          .catch(error => {
+            const message = `Unable to update person, ${serverConnectionErrorMessage}: ${error}`;
+            const type = 'error';
+            handleNotifications({ message, type });
+          });
       } else return;
     }
   };

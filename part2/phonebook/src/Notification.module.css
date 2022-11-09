@@ -1,4 +1,6 @@
 .error p {
+    display: inline-block;
+    padding: 10px 20px;
     border: 2px solid red;
     border-radius: 20px;
     background-color: crimson;
