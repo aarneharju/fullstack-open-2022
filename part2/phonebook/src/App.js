@@ -60,12 +60,14 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
+  const serverConnectionErrorMessage = 'Connection to server failed: ';
+
   // Functions
   const deletePerson = (id) => {
     if (window.confirm(`Delete ${persons.find(person => person.id === id).name}?`)) {
       apiCalls.deletePerson(id)
         .then(setPersons(persons.filter(person => person.id !== id)))
-        .catch(error => alert('Unable to delete person: ', error));
+        .catch(error => alert(`Unable to delete person, ${serverConnectionErrorMessage}: ${error}`));
       return 'Person deleted.'
     } else return;
   }
@@ -77,7 +79,8 @@ const App = () => {
   // Get data from json-server
   useEffect(() => {
     apiCalls.getAllPersons()
-      .then(data => setPersons(data));
+      .then(data => setPersons(data))
+      .catch(error => alert(`Unable to fetch notes, ${serverConnectionErrorMessage}: ${error}`));
   }, [])
 
   // Event handler functions
@@ -113,7 +116,8 @@ const App = () => {
             setNotificationMessageObject(null);
           }, 5000);
           return 'Person added.';
-        });
+        })
+        .catch(error => alert(`Unable to add person, ${serverConnectionErrorMessage}: ${error}`));
 
     } else {
       if (window.confirm(`${newName} is already in the phonebook, would you like to replace the old number with the new one?`)) {
@@ -131,7 +135,8 @@ const App = () => {
             setTimeout(() => {
               setNotificationMessageObject(null);
             }, 5000);
-          });
+          })
+          .catch(error => alert(`Unable to update person, ${serverConnectionErrorMessage}: ${error}`));
       } else return;
     }
   };
