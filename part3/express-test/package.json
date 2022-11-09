@@ -12,5 +12,8 @@
     "url": "aarneharju"
   },
   "author": "Aarne Harju",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
