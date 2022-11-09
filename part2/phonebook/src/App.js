@@ -67,14 +67,14 @@ const App = () => {
     if (window.confirm(`Delete ${persons.find(person => person.id === id).name}?`)) {
       apiCalls.deletePerson(id)
         .then(data => {
-          const message = `${persons.find(person => person.id === id).name} added to phonebook.`;
+          const message = `${persons.find(person => person.id === id).name} deleted from phonebook.`;
           const type = 'success';
 
           setPersons(persons.filter(person => person.id !== id));
 
         })
         .catch(error => {
-          const message = `Unable to delete person, ${serverConnectionErrorMessage}: ${error}`;
+          const message = `Unable to delete person: ${error}`;
           const type = 'error';
           handleNotifications({ message, type });
         });
@@ -157,7 +157,7 @@ const App = () => {
             handleNotifications({ message, type });
           })
           .catch(error => {
-            const message = `Unable to update person, ${serverConnectionErrorMessage}: ${error}`;
+            const message = `Unable to update person: ${error}`;
             const type = 'error';
             handleNotifications({ message, type });
           });
